@@ -165,4 +165,101 @@ npm install
 npm start
 ```
 
-### 4. I
+### 4. Install backend dependencies
+
+Open another terminal:
+
+```bash
+cd server
+npm install
+```
+
+### 5. Start the backend
+
+```bash
+node server.js
+```
+
+The frontend and backend can then run as separate services.
+
+---
+
+## 🔄 Application Workflow
+
+```text
+User
+  │
+  ▼
+Browse Pets
+  │
+  ▼
+View Pet Details
+  │
+  ▼
+Submit Adoption Form
+  │
+  ▼
+Backend API
+  │
+  ▼
+MongoDB
+  │
+  ▼
+Adoption Request Management
+```
+
+Administrators can use the admin panel to manage pet-related information and adoption requests.
+
+---
+
+## 📸 Screenshots
+
+### Home Page
+
+*Add your homepage screenshot here.*
+
+### Pet Listings
+
+*Add your pet listings screenshot here.*
+
+### Adoption Form
+
+*Add your adoption form screenshot here.*
+
+### Admin Panel
+
+*Add your admin panel screenshot here.*
+
+---
+
+## 🎯 Project Goals
+
+* Simplify the pet adoption process
+* Provide an accessible platform for discovering pets
+* Digitize adoption request management
+* Provide centralized pet and request management
+* Demonstrate full-stack web development using the MERN stack
+
+---
+
+## 🔮 Future Enhancements
+
+* User authentication and authorization
+* Advanced pet search and filtering
+* Adoption request status notifications
+* Image upload and cloud storage
+* Email notifications
+* Online chat between adopters and shelters
+* Enhanced analytics for administrators
+
+---
+
+## 👩‍💻 Technologies
+
+`React.js` · `Node.js` · `Express.js` · `MongoDB` · `JavaScript` · `REST APIs` · `Git` · `GitHub`
+
+---
+
+## 📄 License
+
+This project is intended for educational and portfolio purposes.
