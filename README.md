@@ -212,25 +212,7 @@ Administrators can use the admin panel to manage pet-related information and ado
 
 ---
 
-## 📸 Screenshots
 
-### Home Page
-
-*Add your homepage screenshot here.*
-
-### Pet Listings
-
-*Add your pet listings screenshot here.*
-
-### Adoption Form
-
-*Add your adoption form screenshot here.*
-
-### Admin Panel
-
-*Add your admin panel screenshot here.*
-
----
 
 ## 🎯 Project Goals
 
