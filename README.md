@@ -1,42 +1,24 @@
-# 🐾 PawFinds – Pet Adoption Platform
+# 🐾 Pet Adoption Platform
 
-A full-stack **MERN-based pet adoption platform** designed to make pet discovery and adoption easier through a simple, user-friendly web application.
+A full-stack pet adoption platform built with **React, Node.js, Express, MongoDB, and Redis**, providing a structured workflow for pet listings, adoption requests, and administrative management.
 
-PawFinds provides dedicated functionality for browsing available pets, submitting adoption requests, managing pet listings, and handling platform operations through an admin panel.
+The application is containerized using **Docker and Docker Compose**, with Redis integrated as a caching layer to reduce repeated database queries for frequently accessed pet listings.
 
 ---
 
-## 🚀 Features
+## 🚀 Key Features
 
-### 👤 User Features
-
-* Browse available pets
-* View pet details
-* Explore pet categories and services
-* Submit pet adoption requests
-* Contact the platform
-* Responsive and intuitive user interface
-
-### 🐶 Pet Management
-
-* Display available pets
-* Store pet information using MongoDB
-* Retrieve pet data through REST APIs
-* Manage pet listings through the backend
-
-### 📝 Adoption Management
-
-* Adoption request form
-* Capture adopter information
-* Store adoption requests in MongoDB
-* Backend API for adoption request management
-
-### 🛡️ Admin Panel
-
-* Dedicated admin interface
-* Manage pet listings
-* View and manage adoption requests
-* Administrative operations through backend APIs
+* 🐶 Browse available pets and adoption listings
+* 📝 Submit pet adoption requests with details and images
+* 🔄 Manage pet request lifecycle through **Pending → Approved → Adopted**
+* 🛠️ Admin panel for managing pet requests and listings
+* 📸 Image upload and serving through the backend
+* ⚡ Redis-based caching for frequently accessed pet data
+* 🔄 Automatic cache invalidation when pet data changes
+* 🗄️ MongoDB for persistent application data
+* 🐳 Fully containerized backend and frontend
+* 📦 Docker Compose orchestration for the complete application stack
+* 📱 Responsive React-based user interface
 
 ---
 
@@ -44,23 +26,101 @@ PawFinds provides dedicated functionality for browsing available pets, submittin
 
 ```text
                     ┌──────────────────────┐
-                    │      React.js        │
+                    │     React Client     │
                     │      Frontend        │
                     └──────────┬───────────┘
                                │
-                               │ REST API
                                ▼
                     ┌──────────────────────┐
                     │   Node.js + Express  │
-                    │      Backend         │
+                    │       Backend        │
                     └──────────┬───────────┘
                                │
-                               ▼
-                    ┌──────────────────────┐
-                    │       MongoDB        │
-                    │       Database       │
-                    └──────────────────────┘
+                    ┌──────────┴───────────┐
+                    │                      │
+                    ▼                      ▼
+            ┌───────────────┐      ┌───────────────┐
+            │     Redis     │      │    MongoDB    │
+            │     Cache     │      │    Database   │
+            └───────────────┘      └───────────────┘
 ```
+
+---
+
+## ⚡ Redis Caching
+
+Redis is integrated as an application-level caching layer for frequently requested pet listings.
+
+### Cached Endpoints
+
+| Endpoint        | Cached Data   |
+| --------------- | ------------- |
+| `/requests`     | Pending pets  |
+| `/approvedPets` | Approved pets |
+| `/adoptedPets`  | Adopted pets  |
+
+### Cache Strategy
+
+```text
+Client Request
+      │
+      ▼
+ Check Redis Cache
+      │
+ ┌────┴────┐
+ │         │
+HIT       MISS
+ │         │
+ ▼         ▼
+Return   Query MongoDB
+Data        │
+            ▼
+       Store in Redis
+            │
+            ▼
+        Return Data
+```
+
+Cached results use a **5-minute TTL** to prevent stale data from remaining indefinitely.
+
+Cache entries are invalidated whenever relevant pet data changes, including:
+
+* Creating a new pet request
+* Approving or changing a pet's status
+* Deleting a pet listing
+
+This keeps frequently accessed data fast while maintaining consistency with MongoDB.
+
+---
+
+## 🐳 Dockerized Architecture
+
+The complete application can be run using Docker Compose.
+
+```text
+Docker Compose
+│
+├── Frontend
+│   └── React + Nginx
+│
+├── Backend
+│   └── Node.js + Express
+│
+├── Redis
+│   └── Caching Layer
+│
+└── MongoDB
+    └── Persistent Data Storage
+```
+
+### Services
+
+| Service  | Technology        |    Port |
+| -------- | ----------------- | ------: |
+| Frontend | React + Nginx     |  `3000` |
+| Backend  | Node.js + Express |  `4000` |
+| MongoDB  | MongoDB 7         | `27017` |
+| Redis    | Redis 7           |  `6380` |
 
 ---
 
@@ -68,119 +128,71 @@ PawFinds provides dedicated functionality for browsing available pets, submittin
 
 ### Frontend
 
-* React.js
+* React
 * JavaScript
-* HTML5
-* CSS3
+* CSS
+* HTML
 
 ### Backend
 
 * Node.js
 * Express.js
+* MongoDB
+* Mongoose
+* Multer
 * REST APIs
 
-### Database
+### Performance & Infrastructure
 
-* MongoDB
+* Redis
+* Docker
+* Docker Compose
+* Nginx
 
 ### Development Tools
 
-* npm
 * Git
 * GitHub
+* npm
 
 ---
 
-## 📁 Project Structure
+## 📂 Project Structure
 
 ```text
 pet-adoption-platform/
 │
 ├── Client/
 │   ├── public/
-│   └── src/
-│       ├── Components/
-│       │   ├── AdminPanel/
-│       │   ├── AdoptForm/
-│       │   ├── Contact/
-│       │   ├── Footer/
-│       │   ├── Home/
-│       │   ├── NavBar/
-│       │   ├── Pets/
-│       │   └── Services/
-│       │
-│       ├── App.js
-│       ├── App.css
-│       └── index.js
+│   ├── src/
+│   │   ├── Components/
+│   │   │   ├── AdminPanel/
+│   │   │   ├── AdoptForm/
+│   │   │   ├── Contact/
+│   │   │   ├── Footer/
+│   │   │   ├── Home/
+│   │   │   ├── NavBar/
+│   │   │   ├── Pets/
+│   │   │   └── Services/
+│   │   ├── App.js
+│   │   └── index.js
+│   ├── Dockerfile
+│   └── package.json
 │
 ├── server/
 │   ├── Controller/
-│   │   ├── AdminController.js
-│   │   ├── AdoptFormController.js
-│   │   └── PetController.js
-│   │
 │   ├── Model/
-│   │   ├── AdoptFormModel.js
-│   │   └── PetModel.js
-│   │
 │   ├── Routes/
-│   │   ├── AdminRoute.js
-│   │   ├── AdoptFormRoute.js
-│   │   └── PetRoute.js
-│   │
-│   └── server.js
+│   ├── images/
+│   ├── Dockerfile
+│   ├── redisClient.js
+│   ├── server.js
+│   └── package.json
 │
+├── docker-compose.yml
+├── .gitignore
 └── README.md
 ```
-
----
-
-## ⚙️ Getting Started
-
-### Prerequisites
-
-Make sure the following are installed:
-
-* Node.js
-* npm
-* MongoDB
-
-### 1. Clone the repository
-
-```bash
-git clone https://github.com/sanvi-kanala/pet-adoption-platform.git
-cd pet-adoption-platform
-```
-
-### 2. Install frontend dependencies
-
-```bash
-cd Client
-npm install
-```
-
-### 3. Start the frontend
-
-```bash
-npm start
-```
-
-### 4. Install backend dependencies
-
-Open another terminal:
-
-```bash
-cd server
-npm install
-```
-
-### 5. Start the backend
-
-```bash
-node server.js
-```
-
-The frontend and backend can then run as separate services.
 
 ---
 
@@ -188,60 +200,172 @@ The frontend and backend can then run as separate services.
 
 ```text
 User
-  │
-  ▼
-Browse Pets
-  │
-  ▼
-View Pet Details
-  │
-  ▼
-Submit Adoption Form
-  │
-  ▼
-Backend API
-  │
-  ▼
-MongoDB
-  │
-  ▼
-Adoption Request Management
+ │
+ ├── Browse Pets
+ │
+ ├── Submit Adoption Request
+ │          │
+ │          ▼
+ │       Pending
+ │          │
+ │          ▼
+ │     Admin Review
+ │          │
+ │          ▼
+ │       Approved
+ │          │
+ │          ▼
+ │       Adopted
+ │
+ └── Contact / Services
 ```
-
-Administrators can use the admin panel to manage pet-related information and adoption requests.
 
 ---
 
+## 🔌 API Endpoints
 
+### Pet Management
 
-## 🎯 Project Goals
+| Method   | Endpoint         | Purpose                       |
+| -------- | ---------------- | ----------------------------- |
+| `GET`    | `/requests`      | Retrieve pending pet requests |
+| `GET`    | `/approvedPets`  | Retrieve approved pets        |
+| `GET`    | `/adoptedPets`   | Retrieve adopted pets         |
+| `POST`   | `/services`      | Submit a new pet request      |
+| `PUT`    | `/approving/:id` | Update pet approval/status    |
+| `DELETE` | `/delete/:id`    | Delete a pet listing          |
 
-* Simplify the pet adoption process
-* Provide an accessible platform for discovering pets
-* Digitize adoption request management
-* Provide centralized pet and request management
-* Demonstrate full-stack web development using the MERN stack
+### Other Routes
+
+```text
+/form/*
+/admin/*
+```
+
+These routes handle adoption forms and administrative functionality.
+
+---
+
+## ⚙️ Running the Project with Docker
+
+### Prerequisites
+
+Make sure you have installed:
+
+* Docker
+* Docker Compose
+* Git
+
+### Clone the Repository
+
+```bash
+git clone https://github.com/sanvi-kanala/pet-adoption-platform.git
+cd pet-adoption-platform
+```
+
+### Start the Application
+
+```bash
+docker compose up -d --build
+```
+
+### Check Running Containers
+
+```bash
+docker compose ps
+```
+
+You should see:
+
+```text
+pawfinds-frontend
+pawfinds-backend
+pawfinds-mongodb
+pawfinds-redis
+```
+
+### Access the Application
+
+Frontend:
+
+```text
+http://localhost:3000
+```
+
+Backend:
+
+```text
+http://localhost:4000
+```
+
+### Stop the Application
+
+```bash
+docker compose down
+```
+
+To stop the containers while preserving the MongoDB volume:
+
+```bash
+docker compose down
+```
+
+---
+
+## 🔍 Monitoring the Backend
+
+View backend logs:
+
+```bash
+docker logs pawfinds-backend
+```
+
+Redis cache activity can be observed through the backend logs:
+
+```text
+Redis cache MISS: pets:Pending
+Redis cache HIT: pets:Pending
+```
+
+A `MISS` causes the backend to retrieve the data from MongoDB and populate Redis, while subsequent requests can be served directly from the cache.
+
+---
+
+## 🧠 Engineering Highlights
+
+* Designed a REST-based backend for pet and adoption management
+* Implemented MongoDB persistence using Mongoose
+* Added Redis caching for frequently accessed pet listings
+* Implemented cache invalidation to keep cached data synchronized with database updates
+* Containerized the frontend and backend using Docker
+* Orchestrated MongoDB, Redis, backend, and frontend through Docker Compose
+* Configured environment-specific database and Redis connections
+* Added persistent storage for MongoDB and uploaded images
+* Structured the backend using controllers, models, and routes
 
 ---
 
 ## 🔮 Future Enhancements
 
-* User authentication and authorization
+* JWT-based authentication and role-based authorization
 * Advanced pet search and filtering
-* Adoption request status notifications
-* Image upload and cloud storage
-* Email notifications
-* Online chat between adopters and shelters
-* Enhanced analytics for administrators
+* Email notifications for adoption status updates
+* Pet recommendation system
+* Adoption application tracking
+* Redis-backed rate limiting
+* Automated testing and CI/CD
+* Cloud deployment with managed MongoDB and Redis
 
 ---
 
-## 👩‍💻 Technologies
+## 📌 Project Focus
 
-`React.js` · `Node.js` · `Express.js` · `MongoDB` · `JavaScript` · `REST APIs` · `Git` · `GitHub`
+The project combines **full-stack development, REST API design, database management, caching, and containerization** into a single application.
+
+The Dockerized architecture and Redis caching layer provide a foundation for improving deployment consistency and application performance as the platform scales.
 
 ---
 
 ## 📄 License
 
-This project is intended for educational and portfolio purposes.
+This project is available for educational and portfolio purposes.
