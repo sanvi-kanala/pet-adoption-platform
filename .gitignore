@@ -28,3 +28,10 @@ Thumbs.db
 # Temporary files
 *.tmp
 *.temp
+
+# Windows system files
+desktop.ini
+
+# Uploaded pet images
+server/images/*
+!server/images/.gitkeep
